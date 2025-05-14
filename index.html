@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harbor Safety Wave Forecasting (SWAN-FORTH)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 20px 30vh 20px;
+            position: relative;
+            background-color: #ffffff;
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1000;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #000;
+        }
+        #images-container {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        #images-container img {
+            width: 100%;
+            height: auto;
+            opacity: 0.9;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        #form-container {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        label, select, input, textarea {
+            display: block;
+            margin: 15px 0;
+            width: 100%;
+            font-size: 16px;
+        }
+        input, select, textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 40px;
+        }
+        .highlighted {
+            font-weight: bold;
+            color: blue;
+        }
+        .centered {
+            text-align: center;
+        }
+        #footer-image {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: -1;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-container">
+    <h1>Harbor Safety Wave Forecasting with High-Resolution SWAN Model (CMRL-FORTH)</h1>
+</div>
+
+<div id="images-container">
+    <img src="">
+</div>
+
+<div id="form-container">
+    <form id="swanForm">
+        <label for="forecastDate">Forecast Start Date:</label>
+        <input type="date" id="forecastDate" name="forecast_date" required>
+
+        <label for="harborName">Harbor Name:</label>
+        <input type="text" id="harborName" name="harbor_name" value="Heraklion">
+
+        <label for="highResRun">Use 50m High Resolution:</label>
+        <select id="highResRun" name="use_50m_highres">
+            <option value="YES">Yes</option>
+            <option value="NO" selected>No</option>
+        </select>
+
+        <label for="gridResolution">Grid Resolution (m):</label>
+        <input type="number" id="gridResolution" name="grid_resolution" value="100">
+
+        <label for="domainBBox">Bounding Box (min_lon,min_lat,max_lon,max_lat):</label>
+        <input type="text" id="domainBBox" name="domain_bbox" value="25.10,35.30,25.25,35.40">
+
+        <label for="ftpUser">FTP User:</label>
+        <input type="text" id="ftpUser" name="ftp_user" value="ftp_user">
+
+        <label for="ftpPassword">FTP Password:</label>
+        <input type="password" id="ftpPassword" name="ftp_password" value="ftp_pass">
+
+        <label for="ftpServer">FTP Server:</label>
+        <input type="text" id="ftpServer" name="ftp_server" value="ftp.server.address">
+
+        <label for="cwlCommand">Generated CWL Command:</label>
+        <textarea id="cwlCommand" rows="6" cols="50" readonly></textarea>
+
+        <label for="jsonInput">Generated JSON Input:</label>
+        <textarea id="jsonInput" rows="6" cols="50" class="highlighted" readonly></textarea>
+
+        <button type="submit">Generate CWL Command</button>
+        <button type="button" id="copyCwlBtn">COPY CWL COMMAND</button>
+        <button type="button" id="refreshPageBtn">GENERATE NEW CWL COMMAND</button>
+    </form>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('ftpUser').value = "iliad";
+        document.getElementById('ftpPassword').value = "password_request_forth";
+        document.getElementById('ftpServer').value = "ftp_address_request_forth";
+    });
+
+    document.getElementById('swanForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const inputFile = {};
+        formData.forEach((value, key) => {
+            inputFile[key] = value;
+        });
+
+        const cwlCommand = `cwltool swan-model.cwl input_swan.json`;
+        const jsonInput = JSON.stringify(inputFile, null, 4);
+
+        document.getElementById("cwlCommand").textContent = cwlCommand;
+        document.getElementById("jsonInput").textContent = jsonInput;
+    });
+
+    document.getElementById('copyCwlBtn').addEventListener('click', function () {
+        const cwlText = document.getElementById("cwlCommand").textContent;
+        if (cwlText.trim()) {
+            navigator.clipboard.writeText(cwlText);
+            this.textContent = "COPIED!";
+            setTimeout(() => { this.textContent = "COPY CWL COMMAND"; }, 1500);
+        } else {
+            alert("No CWL command to copy yet.");
+        }
+    });
+
+    document.getElementById('refreshPageBtn').addEventListener('click', function () {
+        location.reload();
+    });
+</script>
+
+</body>
+</html>
