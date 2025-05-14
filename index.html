@@ -1,190 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harbor Safety Wave Forecasting (SWAN-FORTH)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0 20px 30vh 20px;
-            position: relative;
-            background-color: #ffffff;
-        }
-        .header-container {
-            text-align: center;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            background-color: white;
-            z-index: 1000;
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            margin: 0;
-            font-size: 32px;
-            color: #000;
-        }
-        #images-container {
-            position: relative;
-            width: 100%;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        #images-container img {
-            width: 100%;
-            height: auto;
-            opacity: 0.9;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-        #form-container {
-            position: relative;
-            z-index: 1;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 800px;
-            margin: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        label, select, input, textarea {
-            display: block;
-            margin: 15px 0;
-            width: 100%;
-            font-size: 16px;
-        }
-        input, select, textarea {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .output {
-            margin-top: 40px;
-        }
-        .highlighted {
-            font-weight: bold;
-            color: blue;
-        }
-        .centered {
-            text-align: center;
-        }
-        #footer-image {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            z-index: -1;
-            opacity: 0.8;
-            pointer-events: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ship Routing & Harbor Safety (CMRL-FORTH)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0 20px 30vh 20px;
+      position: relative;
+      background-color: #ffffff;
+    }
+    .header-container {
+      text-align: center;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      background-color: white;
+      z-index: 1000;
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #000;
+    }
+    #images-container {
+      position: relative;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    #images-container img {
+      width: 100%;
+      height: auto;
+      opacity: 0.9;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    #form-container {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    label, select, input, textarea {
+      display: block;
+      margin: 15px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+    input, select, textarea {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #footer-image {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: -1;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
 
 <div class="header-container">
-    <h1>Harbor Safety Wave Forecasting with High-Resolution SWAN Model (CMRL-FORTH)</h1>
+  <h1>Ship Routing & Harbor Safety (CMRL-FORTH)</h1>
 </div>
 
 <div id="images-container">
-    <img src="">
+  <img src="">
 </div>
 
 <div id="form-container">
-    <form id="swanForm">
-        <label for="forecastDate">Forecast Start Date:</label>
-        <input type="date" id="forecastDate" name="forecast_date" required>
+  <form id="routingForm">
+    <label for="useCretanModels">Use Cretan High-Resolution Models:</label>
+    <select id="useCretanModels" name="use_cretan_models" required>
+      <option value="NO">No</option>
+      <option value="YES">Yes</option>
+    </select>
 
-        <label for="harborName">Harbor Name:</label>
-        <input type="text" id="harborName" name="harbor_name" value="Heraklion">
+    <div id="ftpCredentials" style="display: none;">
+      <h3>Cretan High-Resolution FTP Credentials</h3>
+      <label for="ftpUser">FTP User:</label>
+      <input type="text" id="ftpUser" name="ftp_user" placeholder="iliad" required>
 
-        <label for="highResRun">Use 50m High Resolution:</label>
-        <select id="highResRun" name="use_50m_highres">
-            <option value="YES">Yes</option>
-            <option value="NO" selected>No</option>
-        </select>
+      <label for="ftpPassword">FTP Password:</label>
+      <input type="password" id="ftpPassword" name="ftp_password" required>
 
-        <label for="gridResolution">Grid Resolution (m):</label>
-        <input type="number" id="gridResolution" name="grid_resolution" value="100">
+      <label for="ftpServer">FTP Server:</label>
+      <input type="text" id="ftpServer" name="ftp_server" placeholder="ftp.server.address" required>
+    </div>
 
-        <label for="domainBBox">Bounding Box (min_lon,min_lat,max_lon,max_lat):</label>
-        <input type="text" id="domainBBox" name="domain_bbox" value="25.10,35.30,25.25,35.40">
+    <div id="cmemsCredentials" style="display: none;">
+      <h3>CMEMS Credentials</h3>
+      <label for="cmemsUsername">CMEMS Username:</label>
+      <input type="text" id="cmemsUsername" name="cmems_username" placeholder="CMEMS_user" required>
 
-        <label for="ftpUser">FTP User:</label>
-        <input type="text" id="ftpUser" name="ftp_user" value="ftp_user">
+      <label for="cmemsPassword">CMEMS Password:</label>
+      <input type="password" id="cmemsPassword" name="cmems_password" placeholder="CMEMS_pass" required>
+    </div>
 
-        <label for="ftpPassword">FTP Password:</label>
-        <input type="password" id="ftpPassword" name="ftp_password" value="ftp_pass">
+    <label for="startLat">Start Latitude:</label>
+    <input type="number" step="any" id="startLat" name="start_lat" required>
 
-        <label for="ftpServer">FTP Server:</label>
-        <input type="text" id="ftpServer" name="ftp_server" value="ftp.server.address">
+    <label for="startLon">Start Longitude:</label>
+    <input type="number" step="any" id="startLon" name="start_lon" required>
 
-        <label for="cwlCommand">Generated CWL Command:</label>
-        <textarea id="cwlCommand" rows="6" cols="50" readonly></textarea>
+    <label for="endLat">End Latitude:</label>
+    <input type="number" step="any" id="endLat" name="end_lat" required>
 
-        <label for="jsonInput">Generated JSON Input:</label>
-        <textarea id="jsonInput" rows="6" cols="50" class="highlighted" readonly></textarea>
+    <label for="endLon">End Longitude:</label>
+    <input type="number" step="any" id="endLon" name="end_lon" required>
 
-        <button type="submit">Generate CWL Command</button>
-        <button type="button" id="copyCwlBtn">COPY CWL COMMAND</button>
-        <button type="button" id="refreshPageBtn">GENERATE NEW CWL COMMAND</button>
-    </form>
+    <label for="vesselType">Vessel Type:</label>
+    <select id="vesselType" name="vessel_type" required>
+      <option value="motor">Motor</option>
+      <option value="sailing">Sailing</option>
+    </select>
+
+    <label for="departureDate">Departure Date (Time):</label>
+    <input type="datetime-local" id="departureDate" name="departure_date" required>
+
+    <label for="cwlCommand">Generated CWL Command:</label>
+    <textarea id="cwlCommand" rows="6" readonly></textarea>
+
+    <label for="jsonInput">Generated JSON Input:</label>
+    <textarea id="jsonInput" rows="6" class="highlighted" readonly></textarea>
+
+    <button type="submit">Generate CWL Command</button>
+    <button type="button" id="copyCwlBtn">COPY CWL COMMAND</button>
+    <button type="button" id="refreshPageBtn">GENERATE NEW CWL COMMAND</button>
+  </form>
 </div>
 
 <script>
-    window.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('ftpUser').value = "iliad";
-        document.getElementById('ftpPassword').value = "password_request_forth";
-        document.getElementById('ftpServer').value = "ftp_address_request_forth";
-    });
+  // Show the appropriate credential fields based on the selection
+  const useCretanModelsSelect = document.getElementById('useCretanModels');
+  const ftpCredentials = document.getElementById('ftpCredentials');
+  const cmemsCredentials = document.getElementById('cmemsCredentials');
 
-    document.getElementById('swanForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const inputFile = {};
-        formData.forEach((value, key) => {
-            inputFile[key] = value;
-        });
+  useCretanModelsSelect.addEventListener('change', function () {
+    if (this.value === 'YES') {
+      ftpCredentials.style.display = 'block';
+      cmemsCredentials.style.display = 'none';
+    } else {
+      ftpCredentials.style.display = 'none';
+      cmemsCredentials.style.display = 'block';
+    }
+  });
 
-        const cwlCommand = `cwltool swan-model.cwl input_swan.json`;
-        const jsonInput = JSON.stringify(inputFile, null, 4);
+  // Populate the form with default values
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('ftpUser').value = "iliad";
+    document.getElementById('ftpPassword').value = "password_request_forth";
+    document.getElementById('ftpServer').value = "ftp_address_request_forth";
+    document.getElementById('cmemsUsername').value = "username2";
+    document.getElementById('cmemsPassword').value = "password2";
+  });
 
-        document.getElementById("cwlCommand").textContent = cwlCommand;
-        document.getElementById("jsonInput").textContent = jsonInput;
-    });
+  // Handle form submission
+  document.getElementById('routingForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const inputFile = {};
+    formData.forEach((value, key) => { inputFile[key] = value; });
 
-    document.getElementById('copyCwlBtn').addEventListener('click', function () {
-        const cwlText = document.getElementById("cwlCommand").textContent;
-        if (cwlText.trim()) {
-            navigator.clipboard.writeText(cwlText);
-            this.textContent = "COPIED!";
-            setTimeout(() => { this.textContent = "COPY CWL COMMAND"; }, 1500);
-        } else {
-            alert("No CWL command to copy yet.");
-        }
-    });
+    let cwlCommand = `
+      wrf_ftpserver: 127.0.0.1
+      wrf_username: ${inputFile['ftp_user'] || 'username'}
+      wrf_password: ${inputFile['ftp_password'] || 'password'}
+      wrf_remotedir: /dir
+      start_lat: ${inputFile['start_lat']}
+      start_lon: ${inputFile['start_lon']}
+      end_lat: ${inputFile['end_lat']}
+      end_lon: ${inputFile['end_lon']}
+      vessel_type: ${inputFile['vessel_type']}
+      ${inputFile['cmems_username'] ? `cmems_username: ${inputFile['cmems_username']}` : ''}
+      ${inputFile['cmems_password'] ? `cmems_password: ${inputFile['cmems_password']}` : ''}
+      departure_date: ${inputFile['departure_date'].replace(/(:\d{2})$/,'')}:00Z
+    `;
 
-    document.getElementById('refreshPageBtn').addEventListener('click', function () {
-        location.reload();
-    });
+    const jsonInput = JSON.stringify(inputFile, null, 2);
+
+    document.getElementById("cwlCommand").textContent = cwlCommand;
+    document.getElementById("jsonInput").textContent = jsonInput;
+  });
+
+  // Handle CWL Command Copy Button
+  document.getElementById('copyCwlBtn').addEventListener('click', function () {
+    const cwlText = document.getElementById("cwlCommand").textContent;
+    if (cwlText.trim()) {
+      navigator.clipboard.writeText(cwlText);
+      this.textContent = "COPIED!";
+      setTimeout(() => { this.textContent = "COPY CWL COMMAND"; }, 1500);
+    } else {
+      alert("No CWL command to copy yet.");
+    }
+  });
+
+  // Refresh Page
+  document.getElementById('refreshPageBtn').addEventListener('click', function () {
+    location.reload();
+  });
 </script>
 
 </body>
