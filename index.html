@@ -164,6 +164,7 @@
     <button type="submit">Generate CWL Command</button>
     <button type="button" id="copyJsonBtn">COPY JSON</button>
     <button type="button" id="refreshBtn">NEW TRIP</button>
+    <button type="button" id="geomachineBtn" style="background-color: #28a745;">VISUALIZE THROUGH GeoMachine</button>
   </form>
 </div>
 
@@ -193,6 +194,10 @@
   document.getElementById('routingForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
+  document.getElementById('geomachineBtn').addEventListener('click', function () {
+  window.open("https://geomachine.com/machine/ship-routing", "_blank");
+  });  
+    
     const formData = new FormData(e.target);
     const inputs = {};
     formData.forEach((value, key) => {
